@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 
-const Banner = () => {
+const Banner = ({ countIsDone, total }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
@@ -8,7 +8,9 @@ const Banner = () => {
                 {"\n"}
                 <Text style={{ fontSize: 16 }}>keep it up</Text>
             </Text>
-            <Text style={styles.percentage}>0/0</Text>
+            <Text style={styles.percentage}>
+                {countIsDone}/{total}
+            </Text>
         </View>
     );
 };

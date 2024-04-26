@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, Keyboard, StyleSheet, View } from "react-native";
 import Banner from "./components/Banner";
 import Greet from "./components/Greet";
 import NewTodo from "./components/NewTodo";
 import NoList from "./components/NoList";
 import Todos from "./components/Todos";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,29 +14,19 @@ const schema = z.object({
 });
 
 const HomeScreen = () => {
-    const {} = useForm({ mode: "onTouched", schema: zodResolver(schema) });
+    const { control, handleSubmit, reset, setValue } = useForm({ mode: "onTouched", schema: zodResolver(schema) });
     const [todos, setTodos] = useState([]);
     const [countIsDone, setCountIsDone] = useState(0);
 
-    const addTodo = (todo) => {
-        console.log(todo);
-        if (todo.id) {
-            setTodos((prev) =>
-                prev.map((item) => {
-                    if (item.id === todo.id) {
-                        return { ...item, title: todo };
-                    }
-                    return item;
-                })
-            );
-        } else {
-            const newTodo = {
-                id: new Date().getTime().toString(),
-                title: todo,
-                status: true,
-            };
-            setTodos([...todos, newTodo]);
+    handleNewTodo = (data) => {
+        const isExist = todos.find((todo) => todo.id === data.id);
+        if (isExist) {
+            setTodos((prev) => prev.map((todo) => (todo.id === data.id ? data : todo)));
+            return;
         }
+        setTodos([...todos, data]);
+        reset();
+        Keyboard.dismiss();
     };
 
     const changeStatus = (id) => {
@@ -67,14 +57,16 @@ const HomeScreen = () => {
 
     const handleSelectedTodo = (id) => {
         const valueTodo = todos.find((item) => item.id === id);
-        setTodo(valueTodo);
+        setValue("id", valueTodo.id);
+        setValue("title", valueTodo.title);
+        setValue("status", valueTodo.status);
     };
 
     return (
         <View style={styles.container}>
             <Greet />
             <Banner done={1} total={todos.length} countIsDone={countIsDone} />
-            <NewTodo handleAddTodo={addTodo} todo={todo} setTodo={setTodo} />
+            <NewTodo handleSubmit={handleSubmit} handleNewTodo={handleNewTodo} control={control} />
             <View style={{ flex: 1 }}>
                 {todos.length === 0 ? (
                     <NoList />

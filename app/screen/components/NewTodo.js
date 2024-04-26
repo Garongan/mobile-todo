@@ -1,23 +1,39 @@
+import { Controller } from "react-hook-form";
 import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const NewTodo = ({ handleAddTodo, todo, setTodo }) => {
-    const addTodo = () => {
-        handleAddTodo(todo);
-        setTodo({ id: "", title: "", status: true });
-        Keyboard.dismiss();
+const NewTodo = ({ handleSubmit, handleNewTodo, control }) => {
+    const onSubmit = (todo) => {
+        let newTodo = {
+            status: true,
+            ...todo,
+        };
+        if (todo.id) {
+            newTodo = { ...newTodo, id: todo.id };
+        } else {
+            newTodo = { ...newTodo, id: new Date().getTime().toString() };
+        }
+        handleNewTodo(newTodo);
     };
 
     return (
         <View style={styles.container}>
-            <TextInput
-                onChangeText={setTodo}
-                value={todo.title}
-                inputMode="text"
-                placeholder="write your next task"
-                style={styles.inputText}
-                onSubmitEditing={() => addTodo()}
+            <Controller
+                name="title"
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                        onChangeText={onChange}
+                        value={value}
+                        onBlur={onBlur}
+                        inputMode="text"
+                        placeholder="write your next task"
+                        style={styles.inputText}
+                        onSubmitEditing={() => Keyboard.dismiss()}
+                    />
+                )}
             />
-            <Pressable style={styles.inputButton} onPress={() => addTodo()}>
+
+            <Pressable style={styles.inputButton} onPress={handleSubmit(onSubmit)}>
                 <Text style={{ color: "#fffffe", fontSize: 25, textAlign: "center" }}>+</Text>
             </Pressable>
         </View>

@@ -18,13 +18,17 @@ const HomeScreen = () => {
     const [todos, setTodos] = useState([]);
     const [countIsDone, setCountIsDone] = useState(0);
 
-    handleNewTodo = (data) => {
+    const handleNewTodo = (data) => {
         const isExist = todos.find((todo) => todo.id === data.id);
         if (isExist) {
             setTodos((prev) => prev.map((todo) => (todo.id === data.id ? data : todo)));
-            return;
+        } else {
+            setTodos([...todos, data]);
         }
-        setTodos([...todos, data]);
+        clearForm();
+    };
+
+    const clearForm = () => {
         reset();
         Keyboard.dismiss();
     };
@@ -65,8 +69,8 @@ const HomeScreen = () => {
     return (
         <View style={styles.container}>
             <Greet />
-            <Banner done={1} total={todos.length} countIsDone={countIsDone} />
-            <NewTodo handleSubmit={handleSubmit} handleNewTodo={handleNewTodo} control={control} />
+            <Banner total={todos.length} countIsDone={countIsDone} />
+            <NewTodo handleSubmit={handleSubmit} handleNewTodo={handleNewTodo} control={control} clearForm={clearForm} />
             <View style={{ flex: 1 }}>
                 {todos.length === 0 ? (
                     <NoList />

@@ -1,7 +1,8 @@
+import { Feather } from "@expo/vector-icons";
 import { Controller } from "react-hook-form";
 import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-const NewTodo = ({ handleSubmit, handleNewTodo, control }) => {
+const NewTodo = ({ handleSubmit, handleNewTodo, control, clearForm }) => {
     const onSubmit = (todo) => {
         let newTodo = {
             status: true,
@@ -21,15 +22,21 @@ const NewTodo = ({ handleSubmit, handleNewTodo, control }) => {
                 name="title"
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                        onChangeText={onChange}
-                        value={value}
-                        onBlur={onBlur}
-                        inputMode="text"
-                        placeholder="write your next task"
-                        style={styles.inputText}
-                        onSubmitEditing={() => Keyboard.dismiss()}
-                    />
+                    <View style={styles.inputText}>
+                        <TextInput
+                            onChangeText={onChange}
+                            value={value}
+                            onBlur={onBlur}
+                            inputMode="text"
+                            placeholder="write your next task"
+                            onSubmitEditing={() => Keyboard.dismiss()}
+                        />
+                        {value && (
+                            <Pressable onPress={clearForm}>
+                                <Feather name="x" size={24} color="black" />
+                            </Pressable>
+                        )}
+                    </View>
                 )}
             />
 
@@ -55,6 +62,9 @@ const styles = StyleSheet.create({
         borderStyle: "solid",
         color: "#999999",
         width: "83%",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
     },
     inputButton: {
         backgroundColor: "#004169",

@@ -6,7 +6,7 @@ export default function App() {
     return (
         <SafeAreaProvider style={styles.container}>
             <StatusBar style="auto" />
-                <HomeScreen />
+            <HomeScreen />
         </SafeAreaProvider>
     );
 }
@@ -14,6 +14,6 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fffffe", 
+        backgroundColor: "#fffffe",
     },
 });
